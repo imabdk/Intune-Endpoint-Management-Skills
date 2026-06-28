@@ -49,6 +49,27 @@ Copy-Item -Recurse intune-endpoint-management-skills\skills\intune-endpoint-secu
 
 Then open the workspace in VS Code and confirm the skills appear in the `/` menu in Copilot Chat.
 
+### Scripted install
+
+`Install-EndpointMgmtWorkspace.ps1` sets up a ready-to-use VS Code workspace in one step. It pulls
+the 11 skills into `.github\skills\` and can optionally drop in a workspace context instructions
+file and pin the Microsoft Learn MCP server - so a fresh workspace has everything wired up for
+Copilot out of the box.
+
+```powershell
+# prompts for the workspace root, installs from the main branch
+.\Install-EndpointMgmtWorkspace.ps1
+
+# or non-interactively, pinned to a release tag
+.\Install-EndpointMgmtWorkspace.ps1 -WorkspaceRoot C:\repo -Ref v1.0.0
+```
+
+| Parameter | Default | Purpose |
+|---|---|---|
+| `-WorkspaceRoot` | *(prompted)* | Target workspace root |
+| `-Ref` | `main` | Release tag or branch to install from; pin a tag for reproducible installs |
+| `-DestSubPath` | `.github\skills` | Skills folder, relative to the workspace root |
+
 ## How a skill is built
 
 Every skill follows the same spine so they stay predictable:
