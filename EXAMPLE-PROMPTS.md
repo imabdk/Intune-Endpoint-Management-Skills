@@ -3,9 +3,9 @@
 Each skill triggers automatically from how you phrase a question - you don't call it by name. Just
 ask naturally in Copilot Chat and the agent picks the right skill from its description.
 
-The prompts below are the in-domain phrasings from the routing test fixture, so **every example
-here is verified by the routing test to trigger the skill shown**. Use them as-is to confirm a
-skill is installed and routing correctly, or as a template for your own questions.
+The prompts below are real phrasings I've checked against the skills, so **each prompt here has
+been verified by me to trigger the skill shown**. Use them as-is to confirm a skill is installed
+and routing correctly, or as a template for your own questions.
 
 > Tip: these are starting points, not magic words. Rephrase freely - the agent routes on intent,
 > not exact wording.

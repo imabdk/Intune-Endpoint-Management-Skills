@@ -31,8 +31,8 @@ Eleven standalone skills, one per Endpoint security node:
 Each skill is self-contained - no cross-skill dependencies. The agent picks the right one from the
 skill's `description`, and each skill states its own scope boundaries.
 
-See [EXAMPLE-PROMPTS.md](EXAMPLE-PROMPTS.md) for sample questions that trigger each skill - every
-example there is verified by the routing test to land on the skill shown.
+See [EXAMPLE-PROMPTS.md](EXAMPLE-PROMPTS.md) for sample questions that trigger each skill - each
+prompt has been verified by me to land on the skill shown.
 
 ## Install
 
