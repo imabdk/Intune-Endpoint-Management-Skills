@@ -1,0 +1,24 @@
+# Internal planning and build artifacts - never ship
+release-plan.md
+blog-post-idea.md
+qa-tooling.md
+test-results.md
+
+# Authoring scaffold and example prompts - not part of the deliverable
+skills/_TEMPLATE.md
+prompts/
+
+# Community MIT source material - kept locally as reference, not shipped
+reference/
+
+# Not endpoint security - stays in the lab
+skills/microsoft-tunnel-gateway/
+
+# Agent memory - local only
+.copilot/
+memories/
+
+# OS / editor noise
+Thumbs.db
+.DS_Store
+*.tmp
