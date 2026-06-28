@@ -1,10 +1,10 @@
 # Intune Endpoint Management Skills
 
 Opinionated [Copilot agent skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)
-for **Microsoft Intune endpoint management**. Each skill packages "how to do it right" as an
-on-demand procedure that the agent loads only when it is relevant to what you are doing - grounded
-in Microsoft Learn, with default-vs-recommended baselines, both portal and PowerShell/Graph paths,
-and verification steps.
+for **Microsoft Intune endpoint management**. Each skill packages a way of doing the work as an
+on-demand procedure that the agent loads only when it is relevant to what you are doing - checked
+against Microsoft Learn, with default-vs-recommended baselines, both portal and PowerShell/Graph
+paths, and verification steps.
 
 The first category maps 1:1 to the **Intune Endpoint security** node. Other Intune areas
 (enrollment, app management, connectivity) will follow under their own prefixes over time.
@@ -53,21 +53,19 @@ Then open the workspace in VS Code and confirm the skills appear in the `/` menu
 
 `Install-EndpointMgmtWorkspace.ps1` sets up a ready-to-use VS Code workspace in one step. It pulls
 the 11 skills into `.github\skills\` and can optionally drop in a workspace context instructions
-file and pin the Microsoft Learn MCP server - so a fresh workspace has everything wired up for
-Copilot out of the box.
+file and pin the Microsoft Learn MCP server, so a fresh workspace is ready to use.
 
 ```powershell
-# prompts for the workspace root, installs from the main branch
+# prompts for the workspace root, installs the latest skills from main
 .\Install-EndpointMgmtWorkspace.ps1
 
-# or non-interactively, pinned to a release tag
-.\Install-EndpointMgmtWorkspace.ps1 -WorkspaceRoot C:\repo -Ref v1.0.0
+# or non-interactively
+.\Install-EndpointMgmtWorkspace.ps1 -WorkspaceRoot C:\repo
 ```
 
 | Parameter | Default | Purpose |
 |---|---|---|
 | `-WorkspaceRoot` | *(prompted)* | Target workspace root |
-| `-Ref` | `main` | Release tag or branch to install from; pin a tag for reproducible installs |
 | `-DestSubPath` | `.github\skills` | Skills folder, relative to the workspace root |
 
 ## How a skill is built
@@ -81,13 +79,14 @@ Every skill follows the same spine so they stay predictable:
 5. **Boundaries** - what the skill does *not* cover
 
 Volatile specifics (CSP values, portal paths, profile names) are validated against Microsoft Learn,
-but the portal and CSPs drift - treat them as guidance, not gospel.
+but the portal and CSPs drift - treat them as a starting point and confirm current values in the
+portal.
 
 ## Scope and intent
 
 These are **opinionated procedures, not official Microsoft guidance**. The boundary is managing and
 securing Intune endpoints. The Endpoint security set is intentionally completed first so the library
-stays curated rather than a drawer of half-finished skills.
+stays curated instead of sprawling into half-finished skills.
 
 ## License and attribution
 

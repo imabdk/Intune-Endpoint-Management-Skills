@@ -13,25 +13,20 @@
 .PARAMETER WorkspaceRoot
     Target workspace root. Prompted for if not supplied.
 
-.PARAMETER Ref
-    Git ref (release tag or branch) to install from. Defaults to 'main'. Pin a
-    release tag (e.g. v1.0.0) for a reproducible install.
-
 .PARAMETER DestSubPath
     Skills folder relative to the workspace root. Defaults to '.github\skills',
     the location VS Code discovers automatically.
 
 .EXAMPLE
-    .\Install-EndpointMgmtWorkspace.ps1 -WorkspaceRoot C:\repo -Ref v1.0.0
+    .\Install-EndpointMgmtWorkspace.ps1
+    Prompts for the workspace root and installs the latest skills from main.
 
 .EXAMPLE
-    .\Install-EndpointMgmtWorkspace.ps1
-    Prompts for the workspace root and installs from the main branch.
+    .\Install-EndpointMgmtWorkspace.ps1 -WorkspaceRoot C:\repo
 #>
 [CmdletBinding()]
 param(
     [string]$WorkspaceRoot,
-    [string]$Ref = 'main',
     [string]$DestSubPath = '.github\skills'
 )
 
@@ -53,8 +48,8 @@ $skills = @(
 )
 
 $repo    = 'imabdk/intune-endpoint-management-skills'
-$treeApi = "https://api.github.com/repos/$repo/git/trees/$Ref`?recursive=1"
-$rawBase = "https://raw.githubusercontent.com/$repo/$Ref"
+$treeApi = "https://api.github.com/repos/$repo/git/trees/main`?recursive=1"
+$rawBase = "https://raw.githubusercontent.com/$repo/main"
 
 # Resolve workspace root (prompt if not supplied)
 if ([string]::IsNullOrWhiteSpace($WorkspaceRoot)) {
