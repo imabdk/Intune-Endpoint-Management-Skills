@@ -1,9 +1,9 @@
 # Intune Endpoint Management Skills
 
-Opinionated [Copilot agent skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)
-for **Microsoft Intune endpoint management**. Each skill packages a way of doing the work as an
-on-demand procedure that the agent loads only when it is relevant to what you are doing - checked
-against Microsoft Learn, with default-vs-recommended baselines, both portal and PowerShell/Graph
+Curated [Copilot agent skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)
+for **Microsoft Intune endpoint management**. Each skill packages the work as an
+on-demand procedure that the agent loads only when it is relevant to what you are doing - sourced
+from Microsoft Learn, with default-vs-recommended baselines, both portal and PowerShell/Graph
 paths, and verification steps.
 
 The first category maps 1:1 to the **Intune Endpoint security** node. Other Intune areas
@@ -84,16 +84,18 @@ portal.
 
 ## Scope and intent
 
-These are **opinionated procedures, not official Microsoft guidance**. The boundary is managing and
-securing Intune endpoints. The Endpoint security set is intentionally completed first so the library
-stays curated instead of sprawling into half-finished skills.
+These are **structured procedures sourced from Microsoft Learn, not official Microsoft guidance**.
+The content is sourced and verified against Microsoft Learn; the editorial layer - sequencing,
+defaults, and field-tested do-not-do-this calls - deepens over time as I work through each topic
+hands-on. The boundary is managing and securing Intune endpoints. The Endpoint security set is
+intentionally completed first so the library stays curated instead of sprawling into half-finished
+skills.
 
 ## License and attribution
 
-MIT-licensed. This project started from the community project
-[vinayaklatthe/microsoft-security-skills](https://github.com/vinayaklatthe/microsoft-security-skills)
-(a Microsoft architect's personal, MIT-licensed project - **not** an official Microsoft product).
-Reused content keeps its MIT license and credit.
+MIT-licensed. These skills are original work, authored from scratch against the official
+[VS Code Agent Skills documentation](https://code.visualstudio.com/docs/copilot/customization/agent-skills)
+and Microsoft Learn. They are **not** an official Microsoft product.
 
 ## Author
 
