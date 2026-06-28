@@ -51,16 +51,16 @@ Then open the workspace in VS Code and confirm the skills appear in the `/` menu
 
 ### Scripted install
 
-`Install-EndpointMgmtWorkspace.ps1` sets up a ready-to-use VS Code workspace in one step. It pulls
+`Install-IntuneEndpointMgmtWorkspace.ps1` sets up a ready-to-use VS Code workspace in one step. It pulls
 the 11 skills into `.github\skills\` and can optionally drop in a workspace context instructions
 file and pin the Microsoft Learn MCP server, so a fresh workspace is ready to use.
 
 ```powershell
 # prompts for the workspace root, installs the latest skills from main
-.\Install-EndpointMgmtWorkspace.ps1
+.\Install-IntuneEndpointMgmtWorkspace.ps1
 
 # or non-interactively
-.\Install-EndpointMgmtWorkspace.ps1 -WorkspaceRoot C:\repo
+.\Install-IntuneEndpointMgmtWorkspace.ps1 -WorkspaceRoot C:\repo
 ```
 
 | Parameter | Default | Purpose |

@@ -18,11 +18,11 @@
     the location VS Code discovers automatically.
 
 .EXAMPLE
-    .\Install-EndpointMgmtWorkspace.ps1
+    .\Install-IntuneEndpointMgmtWorkspace.ps1
     Prompts for the workspace root and installs the latest skills from main.
 
 .EXAMPLE
-    .\Install-EndpointMgmtWorkspace.ps1 -WorkspaceRoot C:\repo
+    .\Install-IntuneEndpointMgmtWorkspace.ps1 -WorkspaceRoot C:\repo
 #>
 [CmdletBinding()]
 param(
@@ -75,9 +75,6 @@ if (-not (Test-Path $destSkillsPath)) {
     Write-Host "Created: $destSkillsPath" -ForegroundColor DarkGray
 }
 
-# Canonical destination root for the path-traversal guard (trailing separator)
-$destSkillsRoot = (Resolve-Path -LiteralPath $destSkillsPath).Path.TrimEnd('\') + '\'
-
 # Fetch the full repo tree in a single API call
 Write-Host ""
 Write-Host "Fetching repository tree..." -ForegroundColor DarkGray
@@ -91,10 +88,17 @@ catch {
 
 Write-Host ""
 
-# Download each skill (all files under skills/<skill>/, any depth)
+# Download each skill (all files under skills/<skill>/, any depth).
+# Staging makes this idempotent: each skill is fetched into a clean temp folder and only
+# swapped into place on full success - so re-runs mirror the repo (files removed upstream
+# are dropped) and a partial download never corrupts an existing install.
 $downloaded = 0
 $failed     = 0
 $notFound   = 0
+
+$stagingRoot     = Join-Path $destSkillsPath '.staging'
+$stagingRootFull = [System.IO.Path]::GetFullPath($stagingRoot).TrimEnd('\') + '\'
+if (Test-Path $stagingRoot) { Remove-Item -LiteralPath $stagingRoot -Recurse -Force }   # self-heal any leftover from an aborted run
 
 foreach ($skill in $skills) {
     $prefix = "skills/$skill/"
@@ -109,13 +113,18 @@ foreach ($skill in $skills) {
     $fileCount = 0
     $skillOk   = $true
 
+    # Fetch into a clean staging folder first; the live skill folder is only touched on success.
+    $stageDir = Join-Path $stagingRoot $skill
+    if (Test-Path $stageDir) { Remove-Item -LiteralPath $stageDir -Recurse -Force }
+    New-Item -ItemType Directory -Path $stageDir -Force | Out-Null
+
     foreach ($blob in $blobs) {
         $relative = $blob.path.Substring('skills/'.Length)        # <skill>/...
-        $destFile = Join-Path $destSkillsPath ($relative -replace '/', '\')
+        $destFile = Join-Path $stagingRoot ($relative -replace '/', '\')
 
-        # Path-traversal guard: never write outside the skills folder
+        # Path-traversal guard: never write outside the staging folder
         $fullDest = [System.IO.Path]::GetFullPath($destFile)
-        if (-not $fullDest.StartsWith($destSkillsRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+        if (-not $fullDest.StartsWith($stagingRootFull, [System.StringComparison]::OrdinalIgnoreCase)) {
             Write-Host "  Skipped     $($blob.path) (path escapes destination)" -ForegroundColor Red
             $skillOk = $false
             continue
@@ -137,13 +146,24 @@ foreach ($skill in $skills) {
     }
 
     if ($skillOk) {
-        Write-Host "  Downloaded  $skill ($fileCount file$(if ($fileCount -ne 1) {'s'}))" -ForegroundColor Green
+        # Swap the freshly staged skill into place, replacing any existing copy wholesale
+        # so files removed upstream do not linger.
+        $liveDir = Join-Path $destSkillsPath $skill
+        if (Test-Path $liveDir) { Remove-Item -LiteralPath $liveDir -Recurse -Force }
+        Move-Item -LiteralPath $stageDir -Destination $liveDir -Force
+        Write-Host "  Installed   $skill ($fileCount file$(if ($fileCount -ne 1) {'s'}))" -ForegroundColor Green
         $downloaded++
     }
     else {
+        # Leave any existing install untouched; discard the partial staging.
+        if (Test-Path $stageDir) { Remove-Item -LiteralPath $stageDir -Recurse -Force }
+        Write-Host "  Kept existing $skill (download incomplete - no changes made)" -ForegroundColor Yellow
         $failed++
     }
 }
+
+# Remove the staging scratch area.
+if (Test-Path $stagingRoot) { Remove-Item -LiteralPath $stagingRoot -Recurse -Force }
 
 Write-Host ""
 Write-Host "$downloaded skills downloaded to $destSkillsPath" -ForegroundColor Cyan
@@ -156,12 +176,17 @@ if ($failed -gt 0) {
 
 # Optionally create workspace instructions file
 Write-Host ""
-$createInstructions = Read-Host "Create workspace instructions file (.github\instructions\intune-endpoint-security-context.instructions.md)? [Y/N]"
+$createInstructions = Read-Host "Create workspace instructions file (.github\instructions\intune-endpoint-management-context.instructions.md)? [Y/N]"
 
 if ($createInstructions -match '^[Yy]$') {
     $instructionsDir  = Join-Path $WorkspaceRoot '.github\instructions'
-    $instructionsFile = Join-Path $instructionsDir 'intune-endpoint-security-context.instructions.md'
+    $instructionsFile = Join-Path $instructionsDir 'intune-endpoint-management-context.instructions.md'
 
+    if (Test-Path $instructionsFile) {
+        Write-Warning "Already exists, not overwriting: $instructionsFile"
+        Write-Host "  Delete it first if you want a fresh copy." -ForegroundColor DarkGray
+    }
+    else {
     if (-not (Test-Path $instructionsDir)) {
         New-Item -ItemType Directory -Path $instructionsDir -Force | Out-Null
     }
@@ -174,11 +199,11 @@ applyTo: "**"
 ---
 # Workspace context
 
-This workspace covers the Microsoft Intune Endpoint security node - antivirus, disk encryption,
-firewall, attack surface reduction, endpoint detection and response, account protection, app
-control, endpoint privilege management, device compliance, conditional access, and security
-baselines. It is self-contained - it does not depend on any user-level or global instruction
-files.
+This workspace provides Microsoft Intune and endpoint management skills - reusable, design-level
+guidance for configuring and securing endpoints. The available skills define the scope and are
+listed below; the catalog grows over time, so treat that list as the authoritative boundary
+rather than any fixed set of topics. It is self-contained - it does not depend on any user-level
+or global instruction files.
 
 When answering questions, apply guidance from any of the available skills where relevant:
 $skillList.
@@ -211,6 +236,7 @@ baseline. Omit sections that add no value to simple factual questions.
 
     Set-Content -Path $instructionsFile -Value $content -Encoding UTF8
     Write-Host "Created: $instructionsFile" -ForegroundColor Green
+    }
 }
 
 # Optionally pin the Microsoft Learn MCP server for this workspace (.vscode\mcp.json)
