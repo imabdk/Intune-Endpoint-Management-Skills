@@ -1,6 +1,7 @@
 # Internal planning and build artifacts - never ship
 release-plan.md
 blog-post-idea.md
+blog-post-draft.md
 
 # QA / test framework - internal tooling, never ship
 qa/

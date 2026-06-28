@@ -7,7 +7,8 @@ from Microsoft Learn, with default-vs-recommended baselines, both portal and Pow
 paths, and verification steps.
 
 The first category maps 1:1 to the **Intune Endpoint security** node. Other Intune areas
-(enrollment, app management, connectivity) will follow under their own prefixes over time.
+(enrollment, app management, Windows Autopilot, Windows Autopatch) will follow under their own
+prefixes over time.
 
 ## What's included
 
