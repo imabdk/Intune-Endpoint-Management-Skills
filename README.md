@@ -1,10 +1,9 @@
 # Intune Endpoint Management Skills
 
 Curated [Copilot agent skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)
-for **Microsoft Intune endpoint management**. Each skill packages the work as an
-on-demand procedure that the agent loads only when it is relevant to what you are doing - sourced
-from Microsoft Learn, with default-vs-recommended baselines, both portal and PowerShell/Graph
-paths, and verification steps.
+for **Microsoft Intune endpoint management**. Each skill is an on-demand procedure the agent loads
+only when it is relevant to what you are doing - sourced from Microsoft Learn, with
+default-vs-recommended baselines, both portal and PowerShell/Graph paths, and verification steps.
 
 The first category maps 1:1 to the **Intune Endpoint security** node. Other Intune areas
 (enrollment, app management, Windows Autopilot, Windows Autopatch) will follow under their own
@@ -31,9 +30,6 @@ Eleven standalone skills, one per Endpoint security node:
 Each skill is self-contained - no cross-skill dependencies. The agent picks the right one from the
 skill's `description`, and each skill states its own scope boundaries.
 
-See [EXAMPLE-PROMPTS.md](EXAMPLE-PROMPTS.md) for sample questions that trigger each skill - each
-prompt has been verified by me to land on the skill shown.
-
 ## Install
 
 Skills are loaded from a `skills/` folder. Drop the skill folders into one of the locations
@@ -55,9 +51,9 @@ Then open the workspace in VS Code and confirm the skills appear in the `/` menu
 
 ### Scripted install
 
-`Install-IntuneEndpointMgmtWorkspace.ps1` sets up a ready-to-use VS Code workspace in one step. It pulls
+`Install-IntuneEndpointMgmtWorkspace.ps1` sets up a VS Code workspace in one step. It pulls
 the 11 skills into `.github\skills\` and can optionally drop in a workspace context instructions
-file and pin the Microsoft Learn MCP server, so a fresh workspace is ready to use.
+file and pin the Microsoft Learn MCP server, so the workspace works without further setup.
 
 ```powershell
 # prompts for the workspace root, installs the latest skills from main
@@ -71,6 +67,12 @@ file and pin the Microsoft Learn MCP server, so a fresh workspace is ready to us
 |---|---|---|
 | `-WorkspaceRoot` | *(prompted)* | Target workspace root |
 | `-DestSubPath` | `.github\skills` | Skills folder, relative to the workspace root |
+
+## Example prompts
+
+You don't call a skill by name - just ask naturally in Copilot Chat and the agent picks the right
+one. See [EXAMPLE-PROMPTS.md](EXAMPLE-PROMPTS.md) for sample questions per skill; each prompt has
+been verified by me to land on the skill shown.
 
 ## How a skill is built
 
@@ -92,8 +94,7 @@ These are **structured procedures sourced from Microsoft Learn, not official Mic
 The content is sourced and verified against Microsoft Learn; the editorial layer - sequencing,
 defaults, and field-tested do-not-do-this calls - deepens over time as I work through each topic
 hands-on. The boundary is managing and securing Intune endpoints. The Endpoint security set is
-intentionally completed first so the library stays curated instead of sprawling into half-finished
-skills.
+completed first; the next Intune area starts only once it is done.
 
 ## License and attribution
 
